@@ -1,0 +1,44 @@
+application: tfhackday
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /static
+  static_dir: static
+
+- url: .*
+  script: main.py
+
+- url: /.*
+  script: main.py
+
+- url: /admin/.*
+  script: admin.py
+  login: admin
+
+- url: /_ah/mail/owner@.*tfhackday\.appspotmail\.com 
+  script: handle_owner.py 
+  login: admin
+
+- url: /_ah/mail/support@.*tfhackday\.appspotmail\.com 
+  script: handle_support.py 
+  login: admin
+
+- url: /_ah/mail/.+ 
+  script: handle_catchall.py 
+  login: admin
+
+- url: /images
+  static_dir: static/images
+
+- url: /images/(.*)
+  static_files: static/images/\1
+  upload: static/images/(.*)
+
+inbound_services:
+- mail
+
+builtins:
+- datastore_admin: on
+- appstats: on
